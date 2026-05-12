@@ -123,7 +123,7 @@ async function fetchFullData(lat, lon, name) {
         addToRecent(name, lat, lon);
         
         if (map) {
-            map.setView([lat, lon], 10);
+            map.setView([lat, lon], 7);
         }
     } catch (e) {
         console.error('Update failed:', e);
@@ -328,7 +328,8 @@ async function initMap() {
             const satLatest = data.satellite.infra[data.satellite.infra.length - 1];
             L.tileLayer(`${data.host}${satLatest.path}/256/{z}/{x}/{y}/0/1_1.png`, {
                 opacity: 0.5,
-                zIndex: 50
+                zIndex: 50,
+                maxNativeZoom: 6
             }).addTo(map);
         }
 
@@ -338,7 +339,8 @@ async function initMap() {
             opacity: 0.8,
             zIndex: 100,
             tileSize: 256,
-            smoothFactor: 1
+            smoothFactor: 1,
+            maxNativeZoom: 6
         }).addTo(map);
     } catch (e) {
         console.error('Map data failed:', e);
