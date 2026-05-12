@@ -56,6 +56,7 @@ let map = null;
 let radarLayer = null;
 let currentCoords = { lat: 50.4501, lon: 30.5234, name: 'Київ' };
 let searchTimeout = null;
+let recentSearches = JSON.parse(localStorage.getItem('recent_searches')) || [];
 
 // --- Initialization ---
 function init() {
@@ -116,6 +117,7 @@ async function fetchFullData(lat, lon, name) {
         currentCoords = { lat, lon, name };
         updateUI(weatherData, aqiData, name);
         localStorage.setItem('last_city_v3', JSON.stringify(currentCoords));
+        addToRecent(name, lat, lon);
         
         if (map) {
             map.setView([lat, lon], 10); // Zoom in closer on search
@@ -207,10 +209,15 @@ function renderForecast(daily) {
 async function initMap() {
     if (map) return;
     
-    // Center of Ukraine [48.3794, 31.1656]
-    map = L.map('weather-map').setView([48.3794, 31.1656], 6);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap'
+    // Use CartoDB Dark Matter for a more premium look that fits the UI
+    map = L.map('weather-map', {
+        zoomControl: true,
+        maxZoom: 12,
+        minZoom: 4
+    }).setView([48.3794, 31.1656], 6);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CartoDB'
     }).addTo(map);
 
     try {
@@ -219,8 +226,9 @@ async function initMap() {
         const latest = data.radar.past[data.radar.past.length - 1];
         
         radarLayer = L.tileLayer(`${data.host}${latest.path}/256/{z}/{x}/{y}/2/1_1.png`, {
-            opacity: 0.6,
-            zIndex: 10
+            opacity: 0.7,
+            zIndex: 100,
+            maxNativeZoom: 6 // Radar tiles often don't exist at high zoom
         }).addTo(map);
     } catch (e) {
         console.error('Radar failed:', e);
@@ -262,6 +270,7 @@ function hideLoader() { elements.loader.classList.add('hidden'); }
 
 async function handleSearchInput(e) {
     const q = e.target.value;
+    if (q.length === 0) return renderResults([]); // Show recent searches
     if (q.length < 2) return elements.searchResults.classList.add('hidden');
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(async () => {
@@ -275,6 +284,27 @@ function renderResults(results) {
     elements.searchResults.innerHTML = '';
     elements.searchResults.classList.remove('hidden');
     
+    // Add Recent Searches if input is empty
+    if (elements.cityInput.value.length === 0 && recentSearches.length > 0) {
+        const h = document.createElement('div');
+        h.style.fontSize = '0.75rem'; h.style.color = 'var(--accent)'; h.style.background = 'rgba(255,255,255,0.02)';
+        h.textContent = 'ОСТАННІ ПОШУКИ';
+        elements.searchResults.appendChild(h);
+        
+        recentSearches.forEach(s => {
+            const div = document.createElement('div');
+            div.textContent = s.name;
+            div.onclick = () => {
+                fetchFullData(s.lat, s.lon, s.name);
+                elements.cityInput.value = s.name;
+                elements.searchResults.classList.add('hidden');
+            };
+            elements.searchResults.appendChild(div);
+        });
+        elements.searchResults.classList.remove('hidden');
+        return;
+    }
+
     // Add "Trending" Header
     const header = document.createElement('div');
     header.style.fontSize = '0.75rem'; header.style.color = 'var(--text-muted)'; header.style.background = 'rgba(255,255,255,0.02)';
@@ -297,6 +327,13 @@ function handleGeolocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(p => fetchFullData(p.coords.latitude, p.coords.longitude, 'Ваша локація'));
     }
+}
+
+function addToRecent(name, lat, lon) {
+    if (recentSearches.find(s => s.name === name)) return;
+    recentSearches.unshift({ name, lat, lon });
+    recentSearches = recentSearches.slice(0, 5);
+    localStorage.setItem('recent_searches', JSON.stringify(recentSearches));
 }
 
 init();

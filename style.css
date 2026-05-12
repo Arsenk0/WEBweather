@@ -16,6 +16,12 @@
     --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
+/* Dynamic Themes */
+body.weather-rain { --primary: #3b82f6; --accent: #60a5fa; }
+body.weather-snow { --primary: #94a3b8; --accent: #e2e8f0; }
+body.weather-clear { --primary: #f59e0b; --accent: #fbbf24; }
+body.weather-cloudy { --primary: #6366f1; --accent: #22d3ee; }
+
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
 body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow: hidden; position: relative; }
 
@@ -89,9 +95,9 @@ kbd { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; c
 
 /* Metrics v3 */
 .metrics-grid-v3 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; grid-column: 1 / 2; }
-.metric-box-v3 { padding: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
+.metric-box-v3 { padding: 2rem 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
 .metric-box-v3 i { color: var(--accent); width: 32px; }
-.metric-box-v3 strong { font-size: 1.5rem; }
+.metric-box-v3 strong { font-size: 1.5rem; white-space: nowrap; }
 
 /* Map View */
 .map-view { height: 600px; position: relative; overflow: hidden; padding: 0; }
