@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherUA | Преміальний трекінг погоди</title>
+    <meta name="description" content="Сучасний та швидкий сервіс відстеження погоди в Україні з динамічним дизайном та точними даними.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="weather-clear">
+    <div id="app">
+        <header class="header">
+            <div class="logo">
+                <i data-lucide="cloud-sun"></i>
+                <span>Weather<span>UA</span></span>
+            </div>
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="city-input" placeholder="Пошук міста в Україні..." autocomplete="off">
+                    <button id="geo-btn" title="Визначити місцезнаходження">
+                        <i data-lucide="map-pin"></i>
+                    </button>
+                    <div id="search-results" class="search-results hidden"></div>
+                </div>
+            </div>
+            <div class="date-time">
+                <span id="current-date">--. --. ----</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="current-weather-card">
+                <div class="glass-bg"></div>
+                <div class="card-content">
+                    <div class="main-info">
+                        <div class="location">
+                            <h1 id="city-name">Завантаження...</h1>
+                            <p id="weather-description">Очікування даних</p>
+                        </div>
+                        <div class="temp-container">
+                            <span id="current-temp">--</span><span class="unit">°</span>
+                        </div>
+                    </div>
+                    <div class="weather-visual">
+                        <div id="weather-icon-container">
+                            <i data-lucide="sun" class="large-icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <i data-lucide="droplets"></i>
+                        <div class="stat-info">
+                            <span>Вологість</span>
+                            <strong id="humidity">--%</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i data-lucide="wind"></i>
+                        <div class="stat-info">
+                            <span>Вітер</span>
+                            <strong id="wind-speed">-- км/год</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i data-lucide="eye"></i>
+                        <div class="stat-info">
+                            <span>Видимість</span>
+                            <strong id="visibility">-- км</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i data-lucide="thermometer"></i>
+                        <div class="stat-info">
+                            <span>Відчувається</span>
+                            <strong id="feels-like">--°</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="forecast-section">
+                <div class="section-header">
+                    <h2>Прогноз на 7 днів</h2>
+                </div>
+                <div id="daily-forecast" class="forecast-grid">
+                    <!-- Daily forecast items will be injected here -->
+                    <div class="skeleton-loader"></div>
+                    <div class="skeleton-loader"></div>
+                    <div class="skeleton-loader"></div>
+                    <div class="skeleton-loader"></div>
+                    <div class="skeleton-loader"></div>
+                </div>
+            </section>
+
+            <section class="details-grid">
+                <div class="detail-card glass">
+                    <h3>UV Індекс</h3>
+                    <div class="uv-container">
+                        <span id="uv-index">--</span>
+                        <p id="uv-text">Низький</p>
+                    </div>
+                </div>
+                <div class="detail-card glass">
+                    <h3>Схід та Захід</h3>
+                    <div class="sun-times">
+                        <div class="sun-item">
+                            <i data-lucide="sunrise"></i>
+                            <span id="sunrise-time">--:--</span>
+                        </div>
+                        <div class="sun-item">
+                            <i data-lucide="sunset"></i>
+                            <span id="sunset-time">--:--</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="detail-card glass">
+                    <h3>Тиск</h3>
+                    <div class="pressure-container">
+                        <i data-lucide="gauge"></i>
+                        <span id="pressure">-- гПа</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 WeatherUA. Дані надано Open-Meteo.</p>
+        </footer>
+    </div>
+
+    <div id="loader" class="loader-overlay hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="main.js" type="module"></script>
+</body>
+</html>
