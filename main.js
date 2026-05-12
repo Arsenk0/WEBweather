@@ -156,6 +156,7 @@ function updateUI(weather, aqi, cityName) {
     document.getElementById('pressure').textContent = `${Math.round(cur.surface_pressure)} hPa`;
     document.getElementById('clouds').textContent = `${cur.cloud_cover}%`;
     document.getElementById('uv-index').textContent = daily.uv_index_max[0].toFixed(1);
+    document.getElementById('dew-point').textContent = `${Math.round(cur.dew_point_2m)}°`;
 
     // AQI
     const aVal = aqi.current.european_aqi;
