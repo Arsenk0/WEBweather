@@ -111,7 +111,7 @@ async function fetchFullData(lat, lon, name) {
         
         const [weatherRes, aqiRes] = await Promise.all([
             fetch(`${WEATHER_API_URL}?${query}`),
-            fetch(`${AQI_API_URL}?latitude=${lat}&longitude=${lon}&current=european_aqi&timezone=auto`)
+            fetch(`${AQI_API_URL}?latitude=${lat}&longitude=${lon}&current=european_aqi,pm2_5,pm10,nitrogen_dioxide,ozone&timezone=auto`)
         ]);
 
         const weatherData = await weatherRes.json();
@@ -123,7 +123,7 @@ async function fetchFullData(lat, lon, name) {
         addToRecent(name, lat, lon);
         
         if (map) {
-            map.setView([lat, lon], 10); // Zoom in closer on search
+            map.setView([lat, lon], 10);
         }
     } catch (e) {
         console.error('Update failed:', e);
@@ -159,6 +159,27 @@ function updateUI(weather, aqi, cityName) {
     elements.aqiProgress.style.width = `${Math.min(aVal, 100)}%`;
     elements.aqiProgress.style.background = getAQIColor(aVal);
 
+    // AQI Detail View
+    document.getElementById('aqi-detail-value').textContent = aVal;
+    document.getElementById('aqi-detail-status').textContent = getAQIStatus(aVal);
+    document.getElementById('pm2_5').textContent = `${aqi.current.pm2_5.toFixed(1)} мкг/м³`;
+    document.getElementById('pm10').textContent = `${aqi.current.pm10.toFixed(1)} мкг/м³`;
+    document.getElementById('no2').textContent = `${aqi.current.nitrogen_dioxide.toFixed(1)} мкг/м³`;
+    document.getElementById('o3').textContent = `${aqi.current.ozone.toFixed(1)} мкг/м³`;
+
+    // Astronomy View
+    const sunrise = new Date(daily.sunrise[0]);
+    const sunset = new Date(daily.sunset[0]);
+    const dayLengthMs = sunset - sunrise;
+    const hours = Math.floor(dayLengthMs / 3600000);
+    const minutes = Math.floor((dayLengthMs % 3600000) / 60000);
+
+    document.getElementById('astro-sunrise').textContent = sunrise.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('astro-sunset').textContent = sunset.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('astro-day-length').textContent = `${hours}г ${minutes}хв`;
+    
+    updateMoonPhase();
+
     // Render Components
     renderHourly(hourly);
     renderForecast(daily);
@@ -166,6 +187,36 @@ function updateUI(weather, aqi, cityName) {
     updateParticles(cur.weather_code);
     
     if (window.lucide) lucide.createIcons();
+}
+
+function updateMoonPhase() {
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    
+    // Simple moon phase calculation (approximation)
+    const c = year * 365.25;
+    const e = 30.6 * month;
+    const jd = c + e + day - 694039.09; 
+    const phase = jd / 29.5305882;
+    const age = (phase - Math.floor(phase)) * 29.53;
+    
+    let phaseName = '';
+    let icon = '';
+    
+    if (age < 1.84) { phaseName = 'Новий Місяць'; icon = 'moon'; }
+    else if (age < 5.53) { phaseName = 'Молодий Місяць'; icon = 'moon'; }
+    else if (age < 9.22) { phaseName = 'Перша чверть'; icon = 'moon'; }
+    else if (age < 12.91) { phaseName = 'Зростаючий Місяць'; icon = 'moon'; }
+    else if (age < 16.61) { phaseName = 'Повний Місяць'; icon = 'moon'; }
+    else if (age < 20.3) { phaseName = 'Спадаючий Місяць'; icon = 'moon'; }
+    else if (age < 23.99) { phaseName = 'Остання чверть'; icon = 'moon'; }
+    else if (age < 27.68) { phaseName = 'Старий Місяць'; icon = 'moon'; }
+    else { phaseName = 'Новий Місяць'; icon = 'moon'; }
+
+    document.getElementById('moon-phase-name').textContent = phaseName;
+    document.getElementById('moon-icon-container').innerHTML = `<i data-lucide="${icon}" class="moon-icon"></i>`;
 }
 
 function renderHourly(hourly) {

@@ -38,6 +38,14 @@
                     <i data-lucide="calendar-days"></i>
                     <span>Прогноз</span>
                 </button>
+                <button class="nav-item" data-view="aqi">
+                    <i data-lucide="wind"></i>
+                    <span>Повітря</span>
+                </button>
+                <button class="nav-item" data-view="astronomy">
+                    <i data-lucide="moon"></i>
+                    <span>Астрономія</span>
+                </button>
                 <button class="nav-item" data-view="lifestyle">
                     <i data-lucide="heart"></i>
                     <span>Стиль життя</span>
@@ -159,6 +167,70 @@
                         <h2>Прогноз на 7 днів</h2>
                     </div>
                     <div id="daily-forecast" class="forecast-list"></div>
+                </section>
+
+                <!-- View: AQI Detail -->
+                <section id="view-aqi" class="view">
+                    <div class="section-header">
+                        <h2>Детальний аналіз повітря</h2>
+                        <p>Рівні забруднення та склад атмосфери</p>
+                    </div>
+                    <div class="aqi-detail-grid">
+                        <div class="aqi-main-card glass-panel">
+                            <div class="aqi-big-circle">
+                                <span id="aqi-detail-value">--</span>
+                                <small>AQI</small>
+                            </div>
+                            <h3 id="aqi-detail-status">Завантаження...</h3>
+                        </div>
+                        <div class="aqi-components">
+                            <div class="component-card glass-panel">
+                                <span>PM2.5 (Пил)</span>
+                                <strong id="pm2_5">-- мкг/м³</strong>
+                            </div>
+                            <div class="component-card glass-panel">
+                                <span>PM10 (Великий пил)</span>
+                                <strong id="pm10">-- мкг/м³</strong>
+                            </div>
+                            <div class="component-card glass-panel">
+                                <span>NO₂ (Діоксид азоту)</span>
+                                <strong id="no2">-- мкг/м³</strong>
+                            </div>
+                            <div class="component-card glass-panel">
+                                <span>O₃ (Озон)</span>
+                                <strong id="o3">-- мкг/м³</strong>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- View: Astronomy -->
+                <section id="view-astronomy" class="view">
+                    <div class="section-header">
+                        <h2>Астрономічні дані</h2>
+                        <p>Сонце, Місяць та світловий день</p>
+                    </div>
+                    <div class="astronomy-grid">
+                        <div class="astro-card glass-panel">
+                            <i data-lucide="sun"></i>
+                            <h3>Сонце</h3>
+                            <div class="astro-info">
+                                <div class="info-row"><span>Схід:</span> <strong id="astro-sunrise">--:--</strong></div>
+                                <div class="info-row"><span>Захід:</span> <strong id="astro-sunset">--:--</strong></div>
+                                <div class="info-row"><span>Тривалість дня:</span> <strong id="astro-day-length">-- год</strong></div>
+                            </div>
+                        </div>
+                        <div class="astro-card glass-panel">
+                            <i data-lucide="moon"></i>
+                            <h3>Місяць</h3>
+                            <div class="astro-info">
+                                <div class="info-row"><span>Фаза:</span> <strong id="moon-phase-name">--</strong></div>
+                                <div class="moon-visual">
+                                    <div id="moon-icon-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- View: Lifestyle -->
