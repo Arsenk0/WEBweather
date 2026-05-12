@@ -322,8 +322,18 @@ async function initMap() {
     try {
         const response = await fetch(RAINVIEWER_API);
         const data = await response.json();
-        const latest = data.radar.past[data.radar.past.length - 1];
         
+        // 1. Satellite Layer (Infrared)
+        if (data.satellite && data.satellite.infra) {
+            const satLatest = data.satellite.infra[data.satellite.infra.length - 1];
+            L.tileLayer(`${data.host}${satLatest.path}/256/{z}/{x}/{y}/0/1_1.png`, {
+                opacity: 0.5,
+                zIndex: 50
+            }).addTo(map);
+        }
+
+        // 2. Radar Layer (Precipitation)
+        const latest = data.radar.past[data.radar.past.length - 1];
         radarLayer = L.tileLayer(`${data.host}${latest.path}/256/{z}/{x}/{y}/2/1_1.png`, {
             opacity: 0.8,
             zIndex: 100,
@@ -331,7 +341,7 @@ async function initMap() {
             smoothFactor: 1
         }).addTo(map);
     } catch (e) {
-        console.error('Radar failed:', e);
+        console.error('Map data failed:', e);
     }
 }
 
