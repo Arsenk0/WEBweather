@@ -190,6 +190,7 @@ function updateUI(weather, aqi, cityName) {
     const goldenSet = new Date(sunset.getTime() - 3600000).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('astro-golden-hour').textContent = `${sunrise.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })} - ${goldenRise}`;
     
+    updateSolarTimeline(sunrise, sunset);
     updateMoonPhase();
 
     // Render Components
@@ -229,6 +230,28 @@ function updateMoonPhase() {
 
     document.getElementById('moon-phase-name').textContent = phaseName;
     document.getElementById('moon-icon-container').innerHTML = `<i data-lucide="${icon}" class="moon-icon"></i>`;
+}
+
+function updateSolarTimeline(sunrise, sunset) {
+    const now = new Date();
+    const solarStart = document.getElementById('solar-start');
+    const solarEnd = document.getElementById('solar-end');
+    const sunPos = document.getElementById('sun-position');
+    
+    if (!solarStart || !solarEnd || !sunPos) return;
+    
+    solarStart.textContent = sunrise.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    solarEnd.textContent = sunset.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    
+    const total = sunset - sunrise;
+    const current = now - sunrise;
+    let percent = (current / total) * 100;
+    
+    if (now < sunrise) percent = 0;
+    if (now > sunset) percent = 100;
+    
+    sunPos.style.left = `${percent}%`;
+    sunPos.style.opacity = (now < sunrise || now > sunset) ? '0.3' : '1';
 }
 
 function renderHourly(hourly) {
