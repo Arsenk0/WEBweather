@@ -3,140 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeatherUA | Преміальний трекінг погоди</title>
-    <meta name="description" content="Сучасний та швидкий сервіс відстеження погоди в Україні з динамічним дизайном та точними даними.">
+    <title>WeatherUA Pro | Імерсивний Дашборд</title>
+    <meta name="description" content="Сучасний трекер погоди в Україні з реальним радаром опадів та погодинним прогнозом.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- Lucide Icons -->
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="weather-clear">
-    <div id="app">
-        <header class="header">
+    <div id="particles-container"></div>
+    
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div id="app" class="dashboard-layout">
+        <aside class="sidebar">
             <div class="logo">
                 <i data-lucide="cloud-sun"></i>
                 <span>Weather<span>UA</span></span>
             </div>
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <i data-lucide="search" class="search-icon"></i>
-                    <input type="text" id="city-input" placeholder="Пошук міста в Україні..." autocomplete="off">
-                    <button id="geo-btn" title="Визначити місцезнаходження">
+            <nav class="nav-menu">
+                <button class="nav-item active" data-view="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Огляд</span>
+                </button>
+                <button class="nav-item" data-view="forecast">
+                    <i data-lucide="calendar-days"></i>
+                    <span>Прогноз</span>
+                </button>
+                <button class="nav-item" data-view="lifestyle">
+                    <i data-lucide="heart"></i>
+                    <span>Стиль життя</span>
+                </button>
+                <button class="nav-item" data-view="maps">
+                    <i data-lucide="map"></i>
+                    <span>Карта</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="shortcut-tip">
+                    <span>Натисніть <kbd>/</kbd> для пошуку</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="top-header">
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="city-input" placeholder="Шукати місто (напр. Київ)..." autocomplete="off">
+                        <span class="search-hint">⌘K</span>
+                        <div id="search-results" class="search-results hidden"></div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="geo-btn-top" class="icon-btn" title="Моя локація">
                         <i data-lucide="map-pin"></i>
                     </button>
-                    <div id="search-results" class="search-results hidden"></div>
+                    <div class="current-date-badge">
+                        <i data-lucide="calendar"></i>
+                        <span id="current-date">--. --. ----</span>
+                    </div>
                 </div>
-            </div>
-            <div class="date-time">
-                <span id="current-date">--. --. ----</span>
-            </div>
-        </header>
+            </header>
 
-        <main class="main-content">
-            <section class="current-weather-card">
-                <div class="glass-bg"></div>
-                <div class="card-content">
-                    <div class="main-info">
-                        <div class="location">
-                            <h1 id="city-name">Завантаження...</h1>
-                            <p id="weather-description">Очікування даних</p>
+            <main class="content-area">
+                <!-- View: Dashboard -->
+                <section id="view-dashboard" class="view active">
+                    <div class="grid-layout">
+                        <!-- Hero Card -->
+                        <div class="hero-card glass-panel" style="--delay: 0.1s">
+                            <div class="hero-main">
+                                <div class="location-box">
+                                    <h1 id="city-name">Завантаження...</h1>
+                                    <p id="weather-description">Очікування даних</p>
+                                </div>
+                                <div class="hero-temp">
+                                    <span id="current-temp">--</span><span class="unit">°</span>
+                                </div>
+                            </div>
+                            <div class="hero-visual">
+                                <div id="weather-icon-container">
+                                    <i data-lucide="sun" class="large-icon"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div class="temp-container">
-                            <span id="current-temp">--</span><span class="unit">°</span>
-                        </div>
-                    </div>
-                    <div class="weather-visual">
-                        <div id="weather-icon-container">
-                            <i data-lucide="sun" class="large-icon"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="quick-stats">
-                    <div class="stat-item">
-                        <i data-lucide="droplets"></i>
-                        <div class="stat-info">
-                            <span>Вологість</span>
-                            <strong id="humidity">--%</strong>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <i data-lucide="wind"></i>
-                        <div class="stat-info">
-                            <span>Вітер</span>
-                            <strong id="wind-speed">-- км/год</strong>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <i data-lucide="eye"></i>
-                        <div class="stat-info">
-                            <span>Видимість</span>
-                            <strong id="visibility">-- км</strong>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <i data-lucide="thermometer"></i>
-                        <div class="stat-info">
-                            <span>Відчувається</span>
-                            <strong id="feels-like">--°</strong>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
-            <section class="forecast-section">
-                <div class="section-header">
-                    <h2>Прогноз на 7 днів</h2>
-                </div>
-                <div id="daily-forecast" class="forecast-grid">
-                    <!-- Daily forecast items will be injected here -->
-                    <div class="skeleton-loader"></div>
-                    <div class="skeleton-loader"></div>
-                    <div class="skeleton-loader"></div>
-                    <div class="skeleton-loader"></div>
-                    <div class="skeleton-loader"></div>
-                </div>
-            </section>
-
-            <section class="details-grid">
-                <div class="detail-card glass">
-                    <h3>UV Індекс</h3>
-                    <div class="uv-container">
-                        <span id="uv-index">--</span>
-                        <p id="uv-text">Низький</p>
-                    </div>
-                </div>
-                <div class="detail-card glass">
-                    <h3>Схід та Захід</h3>
-                    <div class="sun-times">
-                        <div class="sun-item">
-                            <i data-lucide="sunrise"></i>
-                            <span id="sunrise-time">--:--</span>
+                        <!-- Hourly Forecast (v3) -->
+                        <div class="hourly-card glass-panel" style="--delay: 0.2s">
+                            <h3>Прогноз на 24 години</h3>
+                            <div id="hourly-list" class="hourly-scroll">
+                                <!-- Hourly items -->
+                            </div>
                         </div>
-                        <div class="sun-item">
-                            <i data-lucide="sunset"></i>
-                            <span id="sunset-time">--:--</span>
+
+                        <!-- AQI Widget -->
+                        <div class="widget-card glass-panel" style="--delay: 0.3s">
+                            <h3>Якість повітря (AQI)</h3>
+                            <div class="aqi-content">
+                                <div class="aqi-value" id="aqi-value">--</div>
+                                <div class="aqi-info">
+                                    <p id="aqi-status">Завантаження...</p>
+                                    <div class="aqi-bar">
+                                        <div id="aqi-progress" class="progress" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lifestyle Tips -->
+                        <div class="widget-card glass-panel" style="--delay: 0.4s">
+                            <h3>Сьогодні варто</h3>
+                            <div class="tips-list" id="lifestyle-tips">
+                                <!-- Tips injected -->
+                            </div>
+                        </div>
+
+                        <!-- Metrics Grid -->
+                        <div class="metrics-grid-v3" style="--delay: 0.5s">
+                            <div class="metric-box-v3 glass-panel">
+                                <i data-lucide="droplets"></i>
+                                <span>Вологість</span>
+                                <strong id="humidity">--%</strong>
+                            </div>
+                            <div class="metric-box-v3 glass-panel">
+                                <i data-lucide="wind"></i>
+                                <span>Вітер</span>
+                                <strong id="wind-speed">-- км/год</strong>
+                            </div>
+                            <div class="metric-box-v3 glass-panel">
+                                <i data-lucide="thermometer"></i>
+                                <span>Відчуття</span>
+                                <strong id="feels-like">--°</strong>
+                            </div>
+                            <div class="metric-box-v3 glass-panel">
+                                <i data-lucide="eye"></i>
+                                <span>Видим.</span>
+                                <strong id="visibility">-- км</strong>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="detail-card glass">
-                    <h3>Тиск</h3>
-                    <div class="pressure-container">
-                        <i data-lucide="gauge"></i>
-                        <span id="pressure">-- гПа</span>
-                    </div>
-                </div>
-            </section>
-        </main>
+                </section>
 
-        <footer class="footer">
-            <p>&copy; 2024 WeatherUA. Дані надано Open-Meteo.</p>
-        </footer>
+                <!-- View: Forecast -->
+                <section id="view-forecast" class="view">
+                    <div class="section-header">
+                        <h2>Прогноз на 7 днів</h2>
+                    </div>
+                    <div id="daily-forecast" class="forecast-list"></div>
+                </section>
+
+                <!-- View: Lifestyle -->
+                <section id="view-lifestyle" class="view">
+                    <div class="section-header">
+                        <h2>Поради та Стиль життя</h2>
+                    </div>
+                    <div class="lifestyle-grid">
+                        <div class="lifestyle-card glass-panel">
+                            <i data-lucide="shirt"></i>
+                            <h3>Одяг</h3>
+                            <p id="clothing-tip">...</p>
+                        </div>
+                        <div class="lifestyle-card glass-panel">
+                            <i data-lucide="car"></i>
+                            <h3>Для авто</h3>
+                            <p id="car-tip">Можна мити авто сьогодні.</p>
+                        </div>
+                        <div class="lifestyle-card glass-panel">
+                            <i data-lucide="sun"></i>
+                            <h3>Сонце</h3>
+                            <p id="uv-recommendation">...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- View: Maps -->
+                <section id="view-maps" class="view">
+                    <div class="section-header">
+                        <h2>Радар опадів (RainViewer)</h2>
+                        <p>Опади в реальному часі</p>
+                    </div>
+                    <div id="map-container" class="map-view glass-panel">
+                        <div id="weather-map"></div>
+                    </div>
+                </section>
+            </main>
+        </div>
     </div>
 
     <div id="loader" class="loader-overlay hidden">
-        <div class="spinner"></div>
+        <div class="spinner-box">
+            <div class="spinner"></div>
+            <p>Оновлення метеоданих...</p>
+        </div>
     </div>
 
     <script src="main.js" type="module"></script>
