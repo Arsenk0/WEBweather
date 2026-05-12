@@ -107,11 +107,11 @@ function switchView(viewId) {
 async function fetchFullData(lat, lon, name) {
     showLoader();
     try {
-        const query = `latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,visibility,precipitation&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto&forecast_days=7`;
+        const query = `latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,visibility,precipitation,surface_pressure,cloud_cover,dew_point_2m&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max,wind_speed_10m_max&timezone=auto&forecast_days=7`;
         
         const [weatherRes, aqiRes] = await Promise.all([
             fetch(`${WEATHER_API_URL}?${query}`),
-            fetch(`${AQI_API_URL}?latitude=${lat}&longitude=${lon}&current=european_aqi,pm2_5,pm10,nitrogen_dioxide,ozone&timezone=auto`)
+            fetch(`${AQI_API_URL}?latitude=${lat}&longitude=${lon}&current=european_aqi,pm2_5,pm10,nitrogen_dioxide,ozone,carbon_monoxide,sulphur_dioxide&timezone=auto`)
         ]);
 
         const weatherData = await weatherRes.json();
@@ -151,6 +151,11 @@ function updateUI(weather, aqi, cityName) {
     elements.windSpeed.textContent = `${cur.wind_speed_10m} км/год`;
     elements.visibility.textContent = `${(cur.visibility / 1000).toFixed(1)} км`;
     elements.feelsLike.textContent = `${Math.round(cur.apparent_temperature)}°`;
+    
+    // New Metrics
+    document.getElementById('pressure').textContent = `${Math.round(cur.surface_pressure)} hPa`;
+    document.getElementById('clouds').textContent = `${cur.cloud_cover}%`;
+    document.getElementById('uv-index').textContent = daily.uv_index_max[0].toFixed(1);
 
     // AQI
     const aVal = aqi.current.european_aqi;
@@ -166,6 +171,8 @@ function updateUI(weather, aqi, cityName) {
     document.getElementById('pm10').textContent = `${aqi.current.pm10.toFixed(1)} мкг/м³`;
     document.getElementById('no2').textContent = `${aqi.current.nitrogen_dioxide.toFixed(1)} мкг/м³`;
     document.getElementById('o3').textContent = `${aqi.current.ozone.toFixed(1)} мкг/м³`;
+    document.getElementById('co').textContent = `${aqi.current.carbon_monoxide.toFixed(1)} мкг/м³`;
+    document.getElementById('so2').textContent = `${aqi.current.sulphur_dioxide.toFixed(1)} мкг/м³`;
 
     // Astronomy View
     const sunrise = new Date(daily.sunrise[0]);
@@ -177,6 +184,11 @@ function updateUI(weather, aqi, cityName) {
     document.getElementById('astro-sunrise').textContent = sunrise.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('astro-sunset').textContent = sunset.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('astro-day-length').textContent = `${hours}г ${minutes}хв`;
+    
+    // Golden Hour (approx 1 hour after sunrise and 1 hour before sunset)
+    const goldenRise = new Date(sunrise.getTime() + 3600000).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    const goldenSet = new Date(sunset.getTime() - 3600000).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('astro-golden-hour').textContent = `${sunrise.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })} - ${goldenRise}`;
     
     updateMoonPhase();
 
@@ -250,10 +262,19 @@ function renderForecast(daily) {
         row.className = 'forecast-row glass-panel';
         row.style.setProperty('--delay', `${i * 0.1}s`);
         row.innerHTML = `
-            <span class="forecast-day">${day}</span>
-            <div class="forecast-info"><i data-lucide="${icon}"></i><span>${WMO_MAP[daily.weather_code[i]]?.label || 'Хмарно'}</span></div>
-            <span class="forecast-max">${Math.round(daily.temperature_2m_max[i])}°</span>
-            <span class="forecast-min">${Math.round(daily.temperature_2m_min[i])}°</span>
+            <div class="forecast-day">${day}</div>
+            <div class="forecast-info">
+                <i data-lucide="${icon}"></i>
+                <span>${WMO_MAP[daily.weather_code[i]]?.label || 'Хмарно'}</span>
+                <span class="rain-prob"><i data-lucide="cloud-rain"></i> ${daily.precipitation_probability_max[i]}%</span>
+            </div>
+            <div class="forecast-wind">
+                <i data-lucide="wind"></i> ${daily.wind_speed_10m_max[i]} км/г
+            </div>
+            <div class="forecast-temp">
+                <span class="forecast-max">${Math.round(daily.temperature_2m_max[i])}°</span>
+                <span class="forecast-min">${Math.round(daily.temperature_2m_min[i])}°</span>
+            </div>
         `;
         elements.dailyForecast.appendChild(row);
     }
