@@ -167,7 +167,6 @@ kbd { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; c
 
 /* Map Overlays */
 .leaflet-container { background: var(--bg-dark) !important; }
-.leaflet-tile { filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); }
 
 /* Dashboard Widgets v4 */
 .widget-card { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 140px; justify-content: center; }

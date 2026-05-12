@@ -325,9 +325,10 @@ async function initMap() {
         const latest = data.radar.past[data.radar.past.length - 1];
         
         radarLayer = L.tileLayer(`${data.host}${latest.path}/256/{z}/{x}/{y}/2/1_1.png`, {
-            opacity: 0.7,
+            opacity: 0.8,
             zIndex: 100,
-            maxNativeZoom: 6 // Radar tiles often don't exist at high zoom
+            tileSize: 256,
+            smoothFactor: 1
         }).addTo(map);
     } catch (e) {
         console.error('Radar failed:', e);
