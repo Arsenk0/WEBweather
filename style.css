@@ -76,10 +76,10 @@ kbd { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; c
 .glass-panel { background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: inset 0 1px 1px rgba(255,255,255,0.1); animation: pop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; animation-delay: var(--delay); }
 @keyframes pop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-.hero-card { grid-column: 1 / 2; padding: 4rem; display: flex; justify-content: space-between; align-items: center; position: relative; }
-.location-box h1 { font-size: 4.5rem; font-weight: 800; letter-spacing: -2px; }
-.hero-temp { font-size: 9rem; font-weight: 800; line-height: 0.8; margin-top: 1rem; }
-.large-icon { width: 240px; height: 240px; animation: float 6s ease-in-out infinite; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5)); }
+.hero-card { grid-column: 1 / 2; padding: 2.5rem 3rem; display: flex; justify-content: space-between; align-items: center; position: relative; }
+.location-box h1 { font-size: 3rem; font-weight: 800; letter-spacing: -1.5px; }
+.hero-temp { font-size: 6rem; font-weight: 800; line-height: 0.8; margin-top: 0.5rem; }
+.large-icon { width: 160px; height: 160px; animation: float 6s ease-in-out infinite; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5)); }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
 
 /* Hourly Forecast (New) */
