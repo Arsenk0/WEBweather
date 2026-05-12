@@ -110,3 +110,45 @@ kbd { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; c
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .hidden { display: none !important; }
+
+/* Forecast & Lifestyle Views (Fixed Spacing) */
+.section-header { margin-bottom: 2rem; }
+.section-header h2 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+.section-header p { color: var(--text-muted); }
+
+.forecast-list { display: flex; flex-direction: column; gap: 1rem; }
+.forecast-row {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 1fr;
+    align-items: center;
+    padding: 1.5rem 2.5rem;
+    transition: 0.3s;
+}
+.forecast-row:hover { background: rgba(255,255,255,0.05); transform: scale(1.01); }
+.forecast-day { font-weight: 600; font-size: 1.1rem; }
+.forecast-info { display: flex; align-items: center; gap: 1rem; color: var(--text-muted); }
+.forecast-info i { width: 24px; color: var(--accent); }
+.forecast-max { font-weight: 800; font-size: 1.25rem; text-align: right; }
+.forecast-min { color: var(--text-muted); text-align: right; }
+
+.lifestyle-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    gap: 2rem; 
+    margin-top: 1rem;
+}
+.lifestyle-card { 
+    padding: 3rem 2rem; 
+    text-align: center; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 1.5rem; 
+}
+.lifestyle-card i { width: 48px; height: 48px; color: var(--accent); }
+.lifestyle-card h3 { font-size: 1.5rem; font-weight: 800; }
+.lifestyle-card p { color: var(--text-muted); line-height: 1.6; font-size: 1.1rem; }
+
+/* Map Overlays */
+.leaflet-container { background: var(--bg-dark) !important; }
+.leaflet-tile { filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); }

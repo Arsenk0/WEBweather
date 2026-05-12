@@ -117,7 +117,9 @@ async function fetchFullData(lat, lon, name) {
         updateUI(weatherData, aqiData, name);
         localStorage.setItem('last_city_v3', JSON.stringify(currentCoords));
         
-        if (map) map.setView([lat, lon], 8);
+        if (map) {
+            map.setView([lat, lon], 10); // Zoom in closer on search
+        }
     } catch (e) {
         console.error('Update failed:', e);
     } finally {
@@ -205,8 +207,9 @@ function renderForecast(daily) {
 async function initMap() {
     if (map) return;
     
-    map = L.map('weather-map').setView([currentCoords.lat, currentCoords.lon], 6);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    // Center of Ukraine [48.3794, 31.1656]
+    map = L.map('weather-map').setView([48.3794, 31.1656], 6);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
