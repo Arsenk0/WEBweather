@@ -81,6 +81,9 @@ function init() {
 
     // Event Listeners
     elements.cityInput.addEventListener('input', handleSearchInput);
+    elements.cityInput.addEventListener('focus', () => {
+        if (elements.cityInput.value.length === 0) renderResults([]);
+    });
     elements.geoBtn.addEventListener('click', handleGeolocation);
     document.addEventListener('click', (e) => {
         if (!document.querySelector('.search-container')?.contains(e.target)) {
@@ -260,6 +263,11 @@ function updateLifestyle(cur, daily) {
     const rain = cur.precipitation > 0;
     elements.clothingTip.textContent = temp < 10 ? 'Тепла куртка та шарф.' : (temp < 20 ? 'Легкий джемпер.' : 'Легка футболка.');
     document.getElementById('car-tip').textContent = rain ? 'Не мийте авто, можливий дощ.' : 'Чудовий час для миття авто.';
+    
+    // Sun logic
+    const sunrise = new Date(daily.sunrise[0]).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    const sunset = new Date(daily.sunset[0]).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('uv-recommendation').innerHTML = `Схід: ${sunrise}<br>Захід: ${sunset}`;
 }
 
 // --- Helpers ---
