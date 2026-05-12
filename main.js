@@ -261,6 +261,10 @@ function updateParticles(code) {
 function updateLifestyle(cur, daily) {
     const temp = cur.temperature_2m;
     const rain = cur.precipitation > 0;
+    const uv = daily.uv_index_max[0];
+    const wind = cur.wind_speed_10m;
+    
+    // Clothing advice
     elements.clothingTip.textContent = temp < 10 ? 'Тепла куртка та шарф.' : (temp < 20 ? 'Легкий джемпер.' : 'Легка футболка.');
     document.getElementById('car-tip').textContent = rain ? 'Не мийте авто, можливий дощ.' : 'Чудовий час для миття авто.';
     
@@ -268,6 +272,28 @@ function updateLifestyle(cur, daily) {
     const sunrise = new Date(daily.sunrise[0]).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
     const sunset = new Date(daily.sunset[0]).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('uv-recommendation').innerHTML = `Схід: ${sunrise}<br>Захід: ${sunset}`;
+
+    // Dynamic Tips Generator
+    elements.lifestyleTips.innerHTML = '';
+    const tips = [];
+    
+    if (rain) tips.push({ icon: 'umbrella', text: 'Візьміть парасольку' });
+    else tips.push({ icon: 'sun', text: 'Парасолька не потрібна' });
+    
+    if (uv > 5) tips.push({ icon: 'shield-check', text: 'Використовуйте SPF' });
+    if (wind > 20) tips.push({ icon: 'wind', text: 'Сьогодні вітряно' });
+    
+    if (temp > 25) tips.push({ icon: 'droplets', text: 'Пийте більше води' });
+    else if (temp < 5) tips.push({ icon: 'thermometer-snowflake', text: 'Одягайтеся тепліше' });
+
+    tips.forEach(tip => {
+        const item = document.createElement('div');
+        item.className = 'tip-item';
+        item.innerHTML = `<i data-lucide="${tip.icon}"></i><span>${tip.text}</span>`;
+        elements.lifestyleTips.appendChild(item);
+    });
+    
+    if (window.lucide) lucide.createIcons();
 }
 
 // --- Helpers ---

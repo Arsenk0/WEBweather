@@ -158,3 +158,28 @@ kbd { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; c
 /* Map Overlays */
 .leaflet-container { background: var(--bg-dark) !important; }
 .leaflet-tile { filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); }
+
+/* Dashboard Widgets v4 */
+.widget-card { padding: 2rem; display: flex; flex-direction: column; gap: 1.25rem; min-height: 180px; justify-content: center; }
+.widget-card h3 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; }
+
+.aqi-content { display: flex; align-items: center; gap: 2rem; }
+.aqi-value { font-size: 3.5rem; font-weight: 800; color: var(--accent); }
+.aqi-info { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+.aqi-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+.aqi-bar .progress { height: 100%; border-radius: 4px; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+
+.tips-list { display: flex; flex-wrap: wrap; gap: 1rem; }
+.tip-item { 
+    background: rgba(255,255,255,0.03); 
+    padding: 0.75rem 1.25rem; 
+    border-radius: 12px; 
+    display: flex; 
+    align-items: center; 
+    gap: 0.75rem; 
+    font-size: 0.95rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    animation: slideIn 0.5s ease-out backwards;
+}
+@keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+.tip-item i { width: 18px; color: var(--accent); }
