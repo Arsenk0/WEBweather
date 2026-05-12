@@ -94,7 +94,12 @@ kbd { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; c
 .hourly-item i { width: 28px; height: 28px; color: var(--accent); }
 
 /* Metrics v3 */
-.metrics-grid-v3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; grid-column: 1 / 2; }
+.metrics-grid-v3 { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1rem; 
+    grid-column: 2 / 3; 
+}
 .metric-box-v3 { padding: 2rem 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
 .metric-box-v3 i { color: var(--accent); width: 32px; }
 .metric-box-v3 strong { font-size: 1.5rem; white-space: nowrap; }
@@ -165,6 +170,8 @@ kbd { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; c
 
 /* Dashboard Widgets v4 */
 .widget-card { padding: 2rem; display: flex; flex-direction: column; gap: 1.25rem; min-height: 180px; justify-content: center; }
+.widget-card:nth-of-type(4) { grid-column: 1 / 2; }
+.widget-card:nth-of-type(5) { grid-column: 2 / 3; }
 .widget-card h3 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; }
 
 .aqi-content { display: flex; align-items: center; gap: 2rem; }
